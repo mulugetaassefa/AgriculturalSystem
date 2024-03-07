@@ -57,14 +57,14 @@ router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
     } else {
       res.status(200).send({
         success: true,
-        data:foundUser,
-        
+        data:foundUser,  
       });
     }
   } catch (error) {
     res.status(500).send({ message: "Error getting user info", success: false, error });
   }
 });
+
 
 // apply for investor account
 router.post('/apply-investor-account', authMiddleware, async (req, res) => {
@@ -140,5 +140,42 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
     return res.status(500).send({ message: "Error in deletion of notification", success: false });
   }
 });
+
+
+
+// Update user profile
+// Update user profile
+router.put('/profile', authMiddleware, async (req, res) => {
+  const userId = req.user.id;
+
+  try {
+    let user = await User.findById(userId);
+
+    if (!user) {
+      return res.status(404).json({ message: 'User not found' });
+    }
+
+    Object.keys(req.body).forEach((key) => {
+      if (key !== 'email') {
+        user[key] = req.body[key];
+      }
+    });
+
+    if (req.file) {
+      user.profilePicture = req.file.filename;
+    }
+
+    const updatedUser = await user.save();
+
+    res.status(200).json({ message: 'User profile updated successfully', data: updatedUser });
+  } catch (error) {
+    console.error('Error updating user profile:', error);
+    res.status(500).json({ message: 'Error updating user profile' });
+  }
+});
+
+
+
+
 
 module.exports = router;
