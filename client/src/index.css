@@ -127,3 +127,7 @@ label {
     margin-left: -40px !important;
     border-bottom-right-radius: 10px;
 }
+
+.notification-link {
+  text-decoration: none;
+}

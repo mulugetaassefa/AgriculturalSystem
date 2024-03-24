@@ -8,13 +8,13 @@ import { hideLoading, showLoading } from '../redux/alertsSlice';
  
 const Login = () => {
     const dispatch = useDispatch();
-  const navigate =useNavigate();
+    const navigate =useNavigate();
  
   const onFinish = async(values) => {
     try {
        dispatch(showLoading());
       const response =await axios.post('/api/user/login', values);
-      dispatch(hideLoading());
+       dispatch(hideLoading());
       if(response.data.success) {
         toast.success(response.data.message);
         toast('Redirecting to home page');

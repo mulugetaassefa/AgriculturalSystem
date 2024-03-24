@@ -13,9 +13,9 @@ const farmUnionLeaderRoute =require('./routes/farmUnionLeader');
 const investorRoute =require('./routes/InvestorRoute');
 
 
-// All user-related routes from frontend
+// All user-related routes from frontend  
 app.use('/api/user', userRoute);
-app.use('/api/user/stockManager', stockManagerRoute);
+app.use('/api/user/stockManager', stockManagerRoute);  
 app.use('/api/user/admin',adminRoute);
 app.use('/api/user/farmer', farmerRoute);
 app.use('/api/user/farmUnionLeader',farmUnionLeaderRoute);

@@ -14,4 +14,5 @@ export const alertsSlice = createSlice({
         }
     }
 });
+
 export const { showLoading, hideLoading } = alertsSlice.actions;

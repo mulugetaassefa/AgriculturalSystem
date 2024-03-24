@@ -8,7 +8,6 @@ import { hideLoading, showLoading } from '../redux/alertsSlice';
 
 const Register = () => {
   const dispatch =useDispatch();
-
   const navigate =useNavigate();
   const onFinish = async (values) => {
      try {

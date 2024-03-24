@@ -26,7 +26,7 @@ const branchSttafSchema = new mongoose.Schema({
         default: "pending"
       },
       branchId : {
-        type: String,
+        type:String,
         required: true,
       },
       branchName : {

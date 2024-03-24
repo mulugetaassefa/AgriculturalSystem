@@ -47,6 +47,7 @@ router.post('/login', async (req, res) => {
   }
 });
 
+
 // protected route
 router.post('/get-user-info-by-id', authMiddleware, async (req, res) => {
   try {
@@ -98,13 +99,11 @@ router.post('/apply-investor-account', authMiddleware, async (req, res) => {
 
 //   change unseen notification to seennotification
 
-router.post(
-  '/api/user/mark-all-notifications-as-seen', 
-   authMiddleware, async (req, res) => {
+router.post('/mark-all-notifications-as-seen', authMiddleware, async (req, res) => {
   try {
     const User = await user.findOne({ _id: req.body.userId });
     const unseenNotification = User.unseenNotification;
-    User.seenNotification = seenNotification;
+    const seenNotification = User.seenNotification; // Declare and initialize seenNotification
     seenNotification.push(...unseenNotification);
     User.unseenNotification = [];
     User.seenNotification = seenNotification;
@@ -132,7 +131,7 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
     updatedUser.password = undefined;
     res.status(200).send({
       success: true,
-      message: "All notification marked as seen",
+      message: "All notification marked as delete",
       data: updatedUser
     });
   } catch (error) {
@@ -143,7 +142,7 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
 
 
 
-// Update user profile
+
 // Update user profile
 router.put('/profile', authMiddleware, async (req, res) => {
   const userId = req.user.id;

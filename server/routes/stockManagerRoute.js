@@ -47,6 +47,27 @@ router.post('/inputs/register', async (req, res) => {
   });
 
 
+ // get all inputs
+router.get('/getAllInputs', async (req, res) => {
+  try {
+    const input = await inputs.find({});
+    res.status(200).send({
+      success: true,
+      message: "Inputs data list",
+      data: input,
+    });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({
+      success: false,
+      message: 'Error while fetching inputs',
+      error,
+    });
+  }
+});
+
+
+
 //  manage orders
 
 // Route for stock manager to view orders
@@ -107,5 +128,28 @@ router.put('/orders/:id/reject', async (req, res) => {
   }
 });
 
+// Check expiration date and notify storage manager
+router.get('/check-expiration-date', async (req, res) => {
+  try {
+    // Get inputs that are closer to expiration date
+    const currentDate = new Date();
+    const expirationDateThreshold = new Date();
+    expirationDateThreshold.setDate(expirationDateThreshold.getDate() + 7); // Example: Consider inputs closer to expiration within 7 days
+
+    const expiringInputs = await inputs.find({ expirationDate: { $gte: currentDate, $lte: expirationDateThreshold } });
+
+    // Notify storage manager
+    const storageManagerId = 'storage-manager-id'; // Replace with the storage manager's ID or find it dynamically based on your system
+    const notificationMessage = `There are inputs closer to the expiration date. Please take necessary actions.`;
+
+    // Write your notification logic here to send the notification to the storage manager
+    // ...
+
+    res.status(200).send({ message: "Expiration date checked successfully", success: true, data: expiringInputs });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Error checking expiration date", success: false });
+  }
+});
 
   module.exports = router;
