@@ -1,5 +1,6 @@
 import React from 'react';
-import { Button, Col, Form, Row, TimePicker } from 'antd';
+import { Button, Col, Form, Row,Upload } from 'antd';
+import { UploadOutlined } from '@ant-design/icons';
 import { useNavigate } from 'react-router-dom';
 import { useSelector, useDispatch } from 'react-redux';
 import axios from 'axios';
@@ -63,10 +64,22 @@ const ApplyInvestor = () => {
             </Form.Item>
           </Col>
           <Col span={8} xs={24} sm={24} lg={8}>
-            <Form.Item required label="website" name='website' rules={[{ required: true }]}>
-              <input placeholder='website' style={{ width: '70%' }} type='text' />
-            </Form.Item>
+          <Form.Item label="Upload Image" name="image">
+        <Upload
+          name="image"
+          accept="image/*"
+        //  onChange={onFileChange}
+          beforeUpload={() => false}
+        >
+          <Button icon={<UploadOutlined />}>Click to Upload</Button>
+        </Upload>
+      </Form.Item>
           </Col>
+        <Col span={8} xs={24} sm={24} lg={8}>
+        <Form.Item label="Farm Location" name="farmLocation" rules={[{ required: true, message: 'Please enter your farm location' }]}>
+        <input />
+      </Form.Item>
+        </Col>
         </Row>
 
         <hr />

@@ -12,12 +12,20 @@ import ApplyInvestor from './pages/ApplyInvestor';
 import Profile from './pages/Profile';
 import AddBranch from './pages/branch/AddBranch';
 import ListOfBranch from './pages/branch/ListOfBranch'
-import InvestorList from './pages/list/InvestorList';
-import BranchList from './pages/list/BranchList';
+import InvestorList from './pages/user/InvestorList';
+import BranchList from './pages/branch/BranchList';
 import CreateOrder from './pages/orders/CreateOrder';
 import CreateInput from './pages/inputs/CreateInput';
 import UpdateInput from './pages/inputs/UpdateInput';
 import DeleteInput from './pages/inputs/DeleteInput';
+import Service from './pages/header/Service';
+import Contact from './pages/header/Contact';
+import About from './pages/header/About'
+import Catagory from './pages/inputs/Catagory';
+import FarmUnionLeader from './pages/farmUnion/farmLeader';
+import ApplyToBranchMember from './pages/user/ApplyToBranchMember';
+import TrackOrder from './pages/orders/TrackOrder';
+import DistributeInput from './pages/inputs/DistributeInput';
 function App() {
   const { loading } = useSelector(state => state.alerts);
   return (
@@ -47,7 +55,19 @@ function App() {
         <Route path='/updateInput'     element= { <ProtectedRoute><UpdateInput /></ProtectedRoute> } />
         <Route path='/deleteInput'     element= { <ProtectedRoute><DeleteInput /></ProtectedRoute> } />
         <Route path='/orders'     element= { <ProtectedRoute><CreateOrder /></ProtectedRoute> } />
-        
+      
+        { /* Header page */}   
+          <Route path='/home'     element= { <ProtectedRoute><Home /></ProtectedRoute> } />
+          <Route path='/service'     element= { <ProtectedRoute><Service /></ProtectedRoute> } />
+          <Route path='/contact'     element= { <ProtectedRoute><Contact /></ProtectedRoute> } />
+          <Route path='/about'     element= { <ProtectedRoute><About /></ProtectedRoute> } />  
+          <Route path='/category'     element= { <ProtectedRoute><Catagory /></ProtectedRoute> } />
+          <Route path='/farm-union'     element= { <ProtectedRoute><FarmUnionLeader/></ProtectedRoute> } />
+          <Route path='/applyFarmer'     element= { <ProtectedRoute><ApplyToBranchMember   /></ProtectedRoute> } />
+          { /* order */}  
+          <Route path='/trackOrder'     element= { <ProtectedRoute><TrackOrder   /></ProtectedRoute> } />
+          <Route path='/distribut-input'     element= { <ProtectedRoute><DistributeInput   /></ProtectedRoute> } /> 
+
       </Routes>
     </Router>
   );

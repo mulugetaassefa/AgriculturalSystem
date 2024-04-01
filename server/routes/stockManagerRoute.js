@@ -2,50 +2,70 @@ const express = require('express');
 const router = express.Router();
 const inputs =require("../models/inputModel");
 const order =require('../models/orderModel');
+const Category =require('../models/category');
 const authMiddleware =require("../middleware/authMiddleware");
+const {  ObjectId, Types } = require('mongoose');
 
 
+                    // inputs
 // add inputs 
 
-router.post('/inputs/register', async (req, res) => {
+router.post('/createInput', async (req, res) => {
     try {
-      const newInput = new inputs(req.body);
-      const savedInput = await newInput.save();
-      res.status(200).send({ message: "Input added successfully", success: true, data: savedInput });
+      const { inputId, name, category, manufacturer, price, quantity, expiryDate } = req.body;
+        const input =new   inputs({ inputId, name, category, manufacturer, price, quantity, expiryDate });
+        await input.save();
+      res.status(201).send({  success: true, data: "inputs created successfully" });
     } catch (error) {
-      res.status(500).send({ message: "Error adding input", success: false });
+      console.log(error);
+      res.status(500).send({  success: false, error: 'Failed to create input'});
+    }
+  });
+ 
+  // delete inputs by id
+  router.delete('/input/:id', async (req, res) => {
+    try {
+      const deletedInput = await inputs.findOneAndDelete({ _id: req.params.id });
+      if (deletedInput) {
+        return res.status(200).send({ message: "Input deleted successfully", success: true });
+      } else {
+        return res.status(404).send({ message: "Input not found", success: false });
+      }
+    } catch (error) {
+      console.error(error);
+      return res.status(500).send({ message: "Error deleting input", success: false });
     }
   });
 
-  // delete inputs by id
-  router.delete('/inputs/:id', async (req, res) => {
+      // get input by id
+  router.get('/input/:id', async (req, res) => {
     try {
-      const deletedInput = await inputs.findByIdAndDelete(req.params.id);
-      if (deletedInput) {
-        res.status(200).send({ message: "Input deleted successfully", success: true, data: deletedInput });
+      const input = await inputs.findOne({ _id: req.params.id });
+  
+      if (input) {
+        res.status(200).send({ message: "Input retrieved successfully", success: true, data: input });
       } else {
         res.status(404).send({ message: "Input not found", success: false });
       }
     } catch (error) {
-      res.status(500).send({ message: "Error deleting input", success: false });
+      res.status(500).send({ message: "Error retrieving input data", success: false });
     }
   });
   
-  // update inputs by id
-
-  router.put('/inputs/:id', async (req, res) => {
-    try {
-      const updatedInput = await inputs.findByIdAndUpdate(req.params.id, req.body, { new: true });
-      if (updatedInput) {
-        res.status(200).send({ message: "Input updated successfully", success: true, data: updatedInput });
-      } else {
-        res.status(404).send({ message: "Input not found", success: false });
-      }
-    } catch (error) {
-      res.status(500).send({ message: "Error updating input", success: false });
+   // Update input by id
+router.put('/input/:inputId', async (req, res) => {
+  try {
+    const updatedInput = await inputs.findByIdAndUpdate(req.params.inputId, req.body, { new: true });
+    if (updatedInput) {
+      res.status(200).send({ message: "Input updated successfully", success: true, data: updatedInput });
+    } else {
+      res.status(404).send({ message: "Input not found", success: false });
     }
-  });
-
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ message: "Error updating input", success: false });
+  }
+});
 
  // get all inputs
 router.get('/getAllInputs', async (req, res) => {
@@ -65,10 +85,63 @@ router.get('/getAllInputs', async (req, res) => {
     });
   }
 });
+                // Category
+
+  // Create a category
+router.post('/createCategory', authMiddleware, async (req, res) => {
+  try {
+    const { categoryId, name, quantity, price } = req.body;
+    const category = new Category({categoryId, name, quantity, price });
+    await category.save();
+    res.status(201).json({ success: true, data: category });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Failed to create category' });
+  }
+});
+
+// Delete a category by id
+router.delete('/deleteCategory/:categoryId', authMiddleware, async (req, res) => {
+  try {
+    const category = await Category.findOneAndDelete(req.params.categoryId);
+    if (!category) {
+      return res.status(404).json({ success: false, error: 'Category not found' });
+    }
+    res.json({ success: true, data: category });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Failed to delete category' });
+  }
+});
+
+// Update a category by id
+router.put('/categories/:id', async (req, res) => {
+  try {
+    const {categoryId, name, quantity, price } = req.body;
+    const category = await Category.findByIdAndUpdate(req.params.id, {categoryId, name, quantity, price }, { new: true });
+    if (!category) {
+      return res.status(404).json({ success: false, error: 'Category not found' });
+    }
+    res.json({ success: true, data: category });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Failed to update category' });
+  }
+});
+
+ // Get all categories
+router.get('/getAllCategory', async (req, res) => {
+  try {
+    const categories = await Category.find();
+    res.json({ success: true, data: categories });
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ success: false, error: 'Failed to fetch categories' });
+  }
+});
 
 
-
-//  manage orders
+         //  manage orders
 
 // Route for stock manager to view orders
 router.get('/orders', async (req, res) => {
@@ -152,4 +225,9 @@ router.get('/check-expiration-date', async (req, res) => {
   }
 });
 
-  module.exports = router;
+
+
+
+
+
+ module.exports = router;

@@ -14,10 +14,8 @@ const inputsSchema = new mongoose.Schema({
     required: true,
   },
   manufacturer: {
-    name: {
       type: String,
       required: true,
-    },
   },
   price: {
     type: Number,
@@ -28,7 +26,7 @@ const inputsSchema = new mongoose.Schema({
     default: 1,
   },
   expiryDate: {
-    type: Date,
+    type: String,
     required: true,
   },
 });

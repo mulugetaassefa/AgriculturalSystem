@@ -15,7 +15,7 @@ const Layout = ({ children }) => {
   const headerMenu = [
     {
       name: "Home",
-      path: "/",
+      path: "/home",
       icon: "ri-home-line",
     },
     {
@@ -35,7 +35,6 @@ const Layout = ({ children }) => {
     },
   ];
   
-
   const userMenu = [
 
     {
@@ -80,7 +79,7 @@ const Layout = ({ children }) => {
       subMenu: [
         { name: "ApplyFarmer", path: "/applyFarmer" },
         { name: "Contact", path: "/contact" },
-        {name: "BranchList", path: "/branchList"}
+        {name: "BranchList", path: "/branches"}
       ],
     },
   ];
@@ -144,19 +143,18 @@ const Layout = ({ children }) => {
       ],
     },
     {
-      name: "Users",
-      path: "/users",
+      name: "Distribut Input",
+      path: "/distribut-input",
       icon: "ri-user-fill",
       subMenu: [
         { name: "ListBranch", path: "/branchlist" },
-        { name: "AddBranch", path: "/addbranch" },
-        { name: "DeleteBranch", path: "/deletebranch" },
-        { name: "UpdateBranch", path: "/updatebranch" },
+        { name: "Distribute Input", path: "/distribut-input"},
+      
       ],
     },
     {
       name: "Investors",
-      path: "/doctors",
+      path: "/investors",
       icon: "ri-user-fill",
       subMenu: [
         { name: "ListBranch", path: "/branchlist" },
@@ -177,14 +175,20 @@ const Layout = ({ children }) => {
       ],
     },
     {
+      name: "Category",
+      path: "/category",
+      icon: "ri-user-line",
+      subMenu: [
+       
+        
+      ],
+    },
+    {
       name: "Inputs",
       path: "/CreateInput",
       icon: "ri-user-line",
       subMenu: [
-        { name: "InputsList", path: "/inputList" },
-        { name: "CreateInput", path: "/createInput" },
-        { name: "DeleteInput", path: "/deleteInput" },
-        { name: "UpdateInput", path: "/updateInput" },
+        
       ],
     },
     {
@@ -192,10 +196,15 @@ const Layout = ({ children }) => {
       path: "/orders",
       icon: "ri-user-line",
       subMenu: [
-        { name: "OrderList", path: "/orders" },
-        { name: "CreateOrder", path: "/createOrder" },
-        { name: "DeleteOrder", path: "/deleteOrder" },
-        { name: "UpdateOrder", path: "/updateOrder" },
+       
+      ],
+    },
+    {
+      name: " Track Order",
+      path: "/trackOrder",
+      icon: "ri-user-line",
+      subMenu: [
+       
       ],
     },
     
@@ -315,7 +324,9 @@ const Layout = ({ children }) => {
         </div>
       </div>
       <div className="d-flex align-items-center copy-right">
-        <p className=" mx-200">
+       </div>
+       <div style={{textAlign: 'center'}}>
+       <p >
          © 2024 - Ethio Agricultural inputs distribution and ordering. All Rights Reserved.
        </p>
        </div>

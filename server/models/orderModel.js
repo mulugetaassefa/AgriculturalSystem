@@ -1,7 +1,11 @@
 const mongoose =require('mongoose');
 
 const orderSchema = new mongoose.Schema({
-    customer: {
+    orderId:{
+      type: String,
+        required: true,
+    },
+    customerId: {
         type: String,
         required: true,
       },
