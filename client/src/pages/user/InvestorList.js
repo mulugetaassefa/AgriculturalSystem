@@ -3,10 +3,15 @@ import React, { useEffect, useState } from 'react';
 import Layout from '../../components/Layout';
 import axios from 'axios';
 import { Table, message } from 'antd';
+import { useSelector } from "react-redux";
+
+
 
 
 const InvestorList = () => {
- const [investors, setInvestors] = useState([])
+
+ const [investors, setInvestors] = useState([]);
+ const { user}  = useSelector((state) => state.user);
  // getInvestors
  const getInvestors = async () => {
      try {
@@ -41,7 +46,7 @@ const InvestorList = () => {
  };
 
  useEffect(() => {
-    getInvestors()
+    getInvestors();
  } , []);
 
    // antD table col
@@ -70,18 +75,23 @@ const InvestorList = () => {
                     {
                        record.status ==="pending" ? (
                         <button className='btn btn-success' onClick={() => handleAccountStatus(record, "approved")}>Approve</button>
-                       ) : (
-                        <button className='btn btn-danger'>Reject</button>
-                       )
+                       ) : 
+                       user?.isAdmin ?  
+                       (
+                        <button className='btn btn-danger' onClick={() => handleAccountStatus(record, "reject")}>Reject</button>
+                       ) : null
                     }
                 </div>
             )
         },
-    ]
+    ];
+    
   return (
     <Layout>
         <h1 className='d-flex items-align-center '>Investor List</h1>
+        <div style={{ maxHeight: "400px", overflowY: "scroll" }}> 
      <Table  columns={columns}  dataSource={investors}/>
+     </div>
     </Layout>
   );
 };

@@ -1,12 +1,14 @@
 import React, { useEffect } from 'react';
 import axios from 'axios';
 import Layout from '../components/Layout';
-import { useDispatch } from 'react-redux';
+import { useDispatch, useSelector} from 'react-redux';
 import { user, reloadUser } from '../redux/userSlice';
+import Dashboard from './Dashboard';
+   
 
 const Home = () => {
   const dispatch = useDispatch();
-
+  const { user}  = useSelector((state) => state.user);
   const getData = async () => {
     try {
       const response = await axios.post(
@@ -30,7 +32,8 @@ const Home = () => {
 
   return (
     <Layout>
-      <h1>Homepage</h1>
+  
+      <Dashboard  user  />
     </Layout>
   );
 };

@@ -75,11 +75,7 @@ const ApplyInvestor = () => {
         </Upload>
       </Form.Item>
           </Col>
-        <Col span={8} xs={24} sm={24} lg={8}>
-        <Form.Item label="Farm Location" name="farmLocation" rules={[{ required: true, message: 'Please enter your farm location' }]}>
-        <input />
-      </Form.Item>
-        </Col>
+        
         </Row>
 
         <hr />

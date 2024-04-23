@@ -1,16 +1,102 @@
-import React, { useState } from "react";
+import React, { useState,useEffect } from "react";
 import "bootstrap/dist/css/bootstrap.css"; // Import Bootstrap CSS
 import "../layout.css";
 import { Link,useLocation, useNavigate } from "react-router-dom";
 import {  CaretDownFilled} from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import { Badge,  Dropdown, Menu } from "antd";
+import { Badge,  Dropdown, Menu} from "antd";
+import { FaHome, FaUser, FaSearch } from 'react-icons/fa';
+import BranchStaffLoginPage from "../pages/BranchStaffLogin";
+import { AppstoreOutlined } from "@ant-design/icons";
+import axios from 'axios';
+
 
 const Layout = ({ children }) => {
   const location = useLocation();
   const { user}  = useSelector((state) => state.user);
   const navigate = useNavigate();
   const [collapsed, setCollapsed] = useState(false);
+  const [branchName, setBranchName] = useState("");
+  const [branchId, setBranchId] = useState("");
+  const [branchSttafId, setBranchSttafId] =  useState("");
+  const [branches, setBranches] = useState([]);
+
+  const brachStaffMenu = [
+    { 
+   name:"Dashboard",
+   path: "/branch/dashboard",
+   icon: "ri-file-list-line",
+    subMenu: [
+    ],
+  },
+   { 
+    name:"Farmer",
+    path: "/branch/farmer",
+    icon: "ri-file-list-line",
+     subMenu: [
+       
+     ],
+   },
+   { 
+    name:"Order",
+    path: "/branch/order",
+    icon: "ri-file-list-line",
+     subMenu: [
+       
+     ],
+   },
+   { 
+    name:"Cart",
+    path: "/branch/cart",
+    icon: "ri-file-list-line",
+     subMenu: [
+      
+     ],
+   },
+   { 
+    name:"inputs",
+    path: "/branch/input",
+    icon: "ri-file-list-line",
+     subMenu: [
+       
+     ],
+   },
+  ];
+  
+ const investorMenu =  [ 
+  {
+    name: "Appointments",
+    path: "/appointments",
+    icon: "ri-file-list-line",
+    subMenu: [
+      { name: "ListOfAppointment", path: '/appointment' },
+      { name: "AddAppointment", path: "/addAppointment" },
+    ],
+  },
+  {
+    name: "Order",
+    path: "/farmer/order",
+    icon: "ri-file-list-line",
+    subMenu: [
+      { name: "ListOfAppointment", path: '/appointment' },
+      { name: "AddAppointment", path: "/addAppointment" },
+    ],
+  },
+  {
+    name: "Cart",
+    path: "/farmer/cart",
+    icon: "ri-file-list-line",
+    subMenu: [
+    ],
+  },
+  {
+    name: "Contact",
+    path: "/farmer/contact",
+    icon: "ri-file-list-line",
+    subMenu: [
+    ],
+  },
+ ];
 
   const headerMenu = [
     {
@@ -36,15 +122,6 @@ const Layout = ({ children }) => {
   ];
   
   const userMenu = [
-
-    {
-      name: "Dashboard",
-      path: "/",
-      icon: "ri-home-line",
-      subMenu: [
-        { name: " ", path: "/" }, 
-      ],
-    },
     {
       name: "Appointments",
       path: "/appointments",
@@ -82,17 +159,15 @@ const Layout = ({ children }) => {
         {name: "BranchList", path: "/branches"}
       ],
     },
+    
   ];
 
   const adminMenu = [
     {
       name: "Dashboard",
       path: "/",
-      icon: "ri-home-line",
+      icon: <FaHome />,
       subMenu: [
-        { name: "Home", path: "/home" },
-        { name: "Service", path: "/service" },
-       
       ],
     },
     {
@@ -100,21 +175,14 @@ const Layout = ({ children }) => {
       path: "/branches",
       icon: "ri-user-fill",
       subMenu: [
-        { name: "ListBranch", path: "/branches" },
-        { name: "AddBranch", path: "/addBranch" },
-        { name: "DeleteBranch", path: "/deletebranch" },
-        { name: "UpdateBranch", path: "/updatebranch" },
       ],
     },
     {
       name: "BranchStaff",
-      path: "/branchStaff",
+      path: "/branch/dashboard",
       icon: "ri-user-fill",
       subMenu: [
-        { name: "ListBranchStaff", path: "/branchStaffList" },
-        { name: "AddBranchStaff", path: "/addBranchStaff" },
-        { name: "DeleteBranchStaff", path: "/deleteBranchStaff" },
-        { name: "UpdateBranchStaff", path: "/updateBranchStaff" },
+      
       ],
     },
     {
@@ -122,10 +190,7 @@ const Layout = ({ children }) => {
       path: "/investorsList",
       icon: "ri-user-fill",
       subMenu: [
-        { name: "ListOfInvestors", path: "/investorList" },
-        { name: "AddInvestor", path: "/addinvestor" },
-        { name: "DeleteInvestor", path: "/deleteInvestor" },
-        { name: "UpdateBranch", path: "/updateInvestor" },
+  
       ],
     },
     
@@ -154,24 +219,10 @@ const Layout = ({ children }) => {
     },
     {
       name: "Investors",
-      path: "/investors",
+      path: "/investorsList",
       icon: "ri-user-fill",
       subMenu: [
-        { name: "ListBranch", path: "/branchlist" },
-        { name: "AddBranch", path: "/addbranch" },
-        { name: "DeleteBranch", path: "/deletebranch" },
-        { name: "UpdateBranch", path: "/updatebranch" },
-      ],
-    },
-    {
-      name: "FarmUnion",
-      path: "/farm-union",
-      icon: "ri-user-line",
-      subMenu: [
-        { name: "farmUnionList", path: "/unionlist" },
-        { name: "AddFarmUnion",  path: "/addUnion" },
-        { name: "DeleteFarmUnion", path: "/deleteUnion" },
-        { name: "UpdateFarmUnion", path: "/updateUnion" },
+        
       ],
     },
     {
@@ -210,8 +261,36 @@ const Layout = ({ children }) => {
     
   ];
   
+  const handleBranchStaffLogin = (name, branchId,branchSttafId) => {
+    setBranchName(name);
+    setBranchId(branchId);
+    setBranchSttafId(branchSttafId);
+  };
+
+ // Fetch branches data from the server
+  useEffect(() => {
+   
+    axios
+      .get('http://localhost:3000/api/user/admin/branchId/${branchId}')
+      .then(response => {
+        setBranches(response.data);
+      })
+      .catch(error => {
+        console.error('Error fetching branches:', error);
+      },[]);
+    });
+ const branch = branches.find( b => b.name.toLowerCase() === branchName.toLowerCase() && b.branchId === branchId && b.branchStaff.toLowerCase() === branchSttafId.toLowerCase());
+  if (user?.isBranchStaff && !branch) {
+    return <BranchStaffLoginPage handleBranchStaffLogin={handleBranchStaffLogin} />;
+  }
+  
+  
   const headerMenuRender = user?.isAdmin || user?.isStockManager ? headerMenu : headerMenu;
-  const menuToBeRendered = user?.isAdmin  ? adminMenu : user?.isStockManager ? stockMenu  : userMenu;
+
+  const menuToBeRendered = user?.isAdmin  ? adminMenu : user?.isStockManager ? stockMenu  :
+   user?.isInvestor ? investorMenu  : user?.isBranchStaff ? brachStaffMenu :userMenu;
+
+   
    
   const handleMenuClick = (path) => {
         // Redirect to the path of the submenu item
@@ -219,6 +298,7 @@ const Layout = ({ children }) => {
       window.location.href = path;
   };
     // render header menu
+    
   const renderHeaderMenu = (menu) => {
     const isActive = location.pathname === menu.path;
     return (
@@ -238,7 +318,7 @@ const Layout = ({ children }) => {
         className={`d-flex menu-item ${isActive && "active-menu-item"}`}
       >
         <i className={menu.icon}></i>
-        {!collapsed && <Link to={menu.path}>{menu.name}</Link>} <CaretDownFilled />
+        {!collapsed && <Link to={menu.path}>{menu.name}</Link>}  {/* dropdowon  <CaretDownFilled />  */} 
       </div>
     );
   };
@@ -270,7 +350,7 @@ const Layout = ({ children }) => {
                 <Dropdown
                 key={menu.path}
                 overlay={renderDropdownMenu(menu.subMenu)}
-                placement="right"
+                placement="bottom"
                 trigger={["hover", "click"]}
                 disabled={collapsed}
 
@@ -333,6 +413,6 @@ const Layout = ({ children }) => {
     </div>
     
   );
-};
+}
 
 export default Layout;

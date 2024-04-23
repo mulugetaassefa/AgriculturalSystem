@@ -74,6 +74,7 @@ const rejectOrderHandler =() => {
       )
     },
   ];
+  
   return (
     <Layout>
         <Table  columns={columns} dataSource={orders} />

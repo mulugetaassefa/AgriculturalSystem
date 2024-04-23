@@ -38,8 +38,8 @@ router.post('/login', async (req, res) => {
     if (!passwordMatch) {
       return res.status(200).send({ message: "Invalid password", success: false });
     } else {
-      const token = jwt.sign({ id: userExist._id }, process.env.JWT_SECRET, { expiresIn: "1d" });
-      res.status(200).send({ message: "Login successful", success: true, token });
+      const token = jwt.sign({ id: userExist._id }, process.env.JWT_SECRET, { expiresIn: "15Minute" });
+      res.status(200).send({ message: "Login successful", success: true, token,role: 'branchStaff'});
     }
   } catch (error) {
     console.log(error);
@@ -139,6 +139,8 @@ router.post('/delete-all-notifications', authMiddleware, async (req, res) => {
     return res.status(500).send({ message: "Error in deletion of notification", success: false });
   }
 });
+
+
 
 
 

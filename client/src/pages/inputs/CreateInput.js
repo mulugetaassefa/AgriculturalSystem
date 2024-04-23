@@ -6,12 +6,14 @@ import { Table,Button, Modal, Form, Input, Select } from 'antd'
 const { Option } = Select;
 
 const CreateInput = () => {
-    const [inputs, setInputs] =useState([])
+    const [inputs, setInputs] =useState([]);
+    const [categories, setCategories] = useState([]);
     const [form] = Form.useForm();
     const [isModalVisible, setIsModalVisible] = useState(false)
     const [upDateIntialValueData, setUpdateInputData] = useState(null);
    
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
+
      // getAllBranches
      const getAllInputs = async () => {
         try {
@@ -29,10 +31,25 @@ const CreateInput = () => {
         } catch (error) {
            console.log(error)
         }
+    };
+
+    // Get All Categories
+  const getAllCategories = async () => {
+    try {
+      const res = await axios.get('/api/user/stockManager/getAllCategory', {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+        },
+      });
+      if (res.data.success) {
+        setCategories(res.data.data);
+      }
+    } catch (error) {
+      console.log(error);
     }
-    useEffect(() => {
-       getAllInputs()
-    }, []);
+  };
+
+   
 
  // delete inputs
 const deleteInput = async (_id) => {
@@ -165,11 +182,17 @@ const deleteInput = async (_id) => {
       },
     ];
 
+
+    useEffect(() => {
+      getAllInputs();
+      getAllCategories();
+   }, []);
+   
   return (
     <Layout>
       <h1 className='text-center m-2'>All Inputs</h1> 
       <Button type="primary" onClick={showModal}> + Create Input  </Button>
-  <Modal title="Create Input" visible={isModalVisible} onCancel={handleCancel} footer={null}>
+   <Modal title="Create Input" visible={isModalVisible} onCancel={handleCancel} footer={null}>
         <Form form={form} onFinish={handleFormSubmit }>
         <Form.Item name="inputId" label="InputId" rules={[{ required: true, message: 'Please enter the input Id' }]}>
             <Input />
@@ -178,12 +201,16 @@ const deleteInput = async (_id) => {
          <Input />
         </Form.Item>
       <Form.Item name="category" label="Category" rules={[{ required: true, message: 'Please select the category' }]}>
+          
           <Select>
-            <Option value="Chemicals">Chemicals</Option>
-             <Option value="seeds">Seeds</Option>
-             <Option value="fertilizers">Fertilizers</Option>
-            <Option value="farm Tools">Farm Tools</Option>
-          </Select>
+          {categories.map((category) => (
+             <Option key={category._id} value={category.name}>
+          {category.inputs}
+           </Option>
+            ))}
+            </Select>
+            
+          
      </Form.Item>
     <Form.Item name="manufacturer" label="Manufacturer" rules={[{ required: true, message: 'Please enter the manufacturer org..' }]}>
             <Input />
@@ -195,7 +222,7 @@ const deleteInput = async (_id) => {
        <Input />
     </Form.Item>
      <Form.Item name="expiryDate" label="Expiry Date" rules={[{ required: true, message: 'Please enter the expiry date' }]}>
-      <Input />
+      <Input type="date" />
       </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" className='mx-2' >
@@ -237,13 +264,15 @@ const deleteInput = async (_id) => {
           name="category"
           label="Category"
           rules={[{ required: true, message: 'Please select the category' }]}
-        >
+        > 
           <Select>
-            <Option value="Chemicals">Chemicals</Option>
-            <Option value="seeds">Seeds</Option>
-            <Option value="fertilizers">Fertilizers</Option>
-            <Option value="farm Tools">Farm Tools</Option>
-          </Select>
+          {categories.map((category) => (
+             <Option key={category._id} value={category._name}>
+          {category.inputs}
+           </Option>
+            ))}
+            </Select>
+
         </Form.Item>
         <Form.Item
           name="manufacturer"

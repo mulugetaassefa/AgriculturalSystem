@@ -27,11 +27,11 @@ const branchSttafSchema = new mongoose.Schema({
       },
       branchId : {
         type:String,
-        required: true,
+        required: false,
       },
       branchName : {
         type : String,
-        required : true,
+        required : false,
       }
     });
 

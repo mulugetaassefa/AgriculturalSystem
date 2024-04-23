@@ -13,19 +13,32 @@ const farmerSchema = new mongoose.Schema({
         type: String,
         required: true
       },
-    phoneNumber: {
-      type:String,
-      required:true,
-    },
+      phoneNumber: {
+        type: String,
+        required: true
+      },
     address: {
       type: String,
       required: true,
     },
-      status:{
+    branchId: {
+      type: String,
+      required: true,
+    },
+    status:{
         type:String,
         default: "pending"
       },
-
+      farmSize: {
+        type: String,
+        required: true,
+      },
+      date: {
+        type: Date,
+        required: true,
+        default: Date.now
+      },
+  
     });
 
  const farmerModel = mongoose.model('farmer', farmerSchema);

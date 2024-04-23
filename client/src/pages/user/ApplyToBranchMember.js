@@ -8,7 +8,7 @@ import Layout from '../../components/Layout';
 const ApplyToBranchMember = () => {
   return (
     <Layout>
-      <div style={{ maxHeight: "400px", overflowY: "scroll" }}>
+      <div style={{ maxHeight: "580px", overflowY: "scroll" }}>
     <div className='page-title'>Apply for Farmer to Member of Branch</div>
     <hr />
     <Form layout='vertical' >
@@ -29,7 +29,7 @@ const ApplyToBranchMember = () => {
         <Select>
           <Option value="male">Male</Option>
           <Option value="female">Female</Option>
-          <Option value="other">Other</Option>
+          
         </Select>
       </Form.Item>
         </Col>
@@ -104,7 +104,7 @@ const ApplyToBranchMember = () => {
       </Row>
 
       <div className='d-flex justify-content-end '>
-        <Button className='primary-button' htmlType='submit'>SUBMIT</Button>
+        <Button className='primary-button my-30' htmlType='submit'>SUBMIT</Button>
       </div>
     </Form>
     </div>

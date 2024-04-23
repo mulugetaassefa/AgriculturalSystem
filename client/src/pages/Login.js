@@ -9,6 +9,7 @@ import { hideLoading, showLoading } from '../redux/alertsSlice';
 const Login = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  
   const [form] = Form.useForm();
 
   const onFinish = async (values) => {
@@ -25,14 +26,14 @@ const Login = () => {
 
       const response = await axios.post('/api/user/login', values);
       dispatch(hideLoading());
-      
+
       if (response.data.success) {
         toast.success(response.data.message);
-        toast('Redirecting to home page');
         const token = response.data.token;
         localStorage.setItem('token', token);
-        navigate('/');
         console.log(localStorage.getItem('token'));
+
+        navigate('/');
       } else {
         toast.error(response.data.message);
         form.resetFields(); // Clear the input values
@@ -49,7 +50,11 @@ const Login = () => {
         <h1 className='card-title'>Welcome Back</h1>
 
         <Form form={form} layout='vertical' onFinish={onFinish}>
-          <Form.Item label='Email' name='email' rules={[{ required: true, message: 'Email is required' }]}>
+          <Form.Item
+            label='Email'
+            name='email'
+            rules={[{ required: true, message: 'Email is required' }]}
+          >
             <Input placeholder='Email' />
           </Form.Item>
 

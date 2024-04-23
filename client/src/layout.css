@@ -4,7 +4,7 @@
 }
 
 .sidebar {
-    background-color:  white;
+    background-color:  aqua;
     border-radius: 5px;
     box-shadow: 0 0 2px gray;
     margin-right: 20px;
@@ -26,7 +26,7 @@
     height: 100%;
 }
 .header {
-    background-color: whitesmoke;
+    background-color: aqua;
     border-radius: 5px;
     box-shadow: 0 0 2px gray;
     margin-bottom: 20px;
@@ -99,7 +99,7 @@ margin-top: 30px;
   .footer {
     align-items: center;
     margin-top: 3px;
-    color: #005555;
+    color: rgb(137, 166, 34);
   }
   .copy-right {
   align-items: center;

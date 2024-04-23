@@ -8,9 +8,10 @@ const { Option } = Select;
 
 const BranchList = () => {
   const [branches, setBranches] = useState([]);
+ const [branchStaffs, setBranchStaff] = useState([]);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [isUpdateFormVisible, setIsUpdateFormVisible] = useState(false);
-  const [upDateIntialValueData,  setUpdateBranchData] = useState(null);
+  const [updatePrevBranchData, setUpdateBranchData] = useState(null);
   const [form] = Form.useForm();
 
   // getAllBranches
@@ -25,8 +26,22 @@ const BranchList = () => {
     }
   };
 
+    // get all Branch staff
+    const getAllBranchStaff = async () => {
+      try { 
+        const res = await axios.get("/api/user/admin/getAllBranchStaff");
+        if (res.data.success) {
+          setBranchStaff(res.data.data);
+        }
+      } catch (error) {
+        console.log(error);
+      }
+    };
+
+
   useEffect(() => {
     getAllBranches();
+    getAllBranchStaff();
   }, []);
 
   // create branch
@@ -67,7 +82,7 @@ const BranchList = () => {
   };
 
   // show previous value of selected branch
- const  updatePrevBranch= async (id) => {
+  const updatePrevBranch = async (id) => {
     try {
       const res = await axios.get(`/api/user/admin/branch/${id}`);
       console.log(res);
@@ -80,16 +95,16 @@ const BranchList = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error('Error occurred while retrieving branch data');
+      toast.error("Error occurred on retrieving branch data");
     }
   };
 
- // handle submit update form data 
- const handleUpdateFormSubmit = async (inputId, values) => {
+  // handle submit update form data
+  const handleUpdateFormSubmit = async (_inputId, values) => {
     try {
-      const res = await axios.put(`/api/user/admin/branch-update/${inputId}`, values);
+      const res = await axios.put(`/api/user/admin/branch-update/${_inputId}`, values);
       if (res.data.success) {
-        toast.success('Input updated successfully');
+        toast.success("Input updated successfully");
         getAllBranches();
         setIsUpdateFormVisible(false);
       } else {
@@ -97,9 +112,10 @@ const BranchList = () => {
       }
     } catch (error) {
       console.log(error);
-      toast.error('Error occurred while updating input data');
+      toast.error("Error occurred while updating input data");
     }
   };
+
   // create popup menu to create branch
   const showModal = () => {
     setIsModalVisible(true);
@@ -131,16 +147,11 @@ const BranchList = () => {
     {
       title: "Actions",
       dataIndex: "actions",
-      render: (text, record) => (
-        <div className="text-center m-2">
-          <button className="btn btn-danger mx-2" onClick={() => deleteBranch(record._id)}>
-            Delete
-          </button>
-          <button className="btn btn-danger" onClick={() => {
-       setIsUpdateFormVisible(true);
-        updatePrevBranch(record._id); }}
-           >Update</button>
-          <button className="btn btn-danger mx-2">View</button>
+      render: (_, record) => (
+        <div>
+          <Button className="btn btn-danger mx-2" onClick={() => updatePrevBranch(record._id)}>Update</Button>
+          <Button className="btn btn-danger mx-2"
+          onClick={() => deleteBranch(record._id)}>Delete</Button>
         </div>
       ),
     },
@@ -148,86 +159,162 @@ const BranchList = () => {
 
   return (
     <Layout>
-      <h1 className="text-center m-2">All Branches</h1>
       <Button type="primary" onClick={showModal}>
-        + Create Branch
+        Create Branch
       </Button>
-      <Modal title="Create Branch" visible={isModalVisible} onCancel={handleCancel} footer={null}>
-        <Form form={form} onFinish={handleFormSubmit}>
-          <Form.Item name="branchName" label="Branch Name" rules={[{ required: true, message: "Please enter the branch name" }]}>
+      <Table dataSource={branches} columns={columns} />
+
+      <Modal
+        title="Create Branch"
+        visible={isModalVisible}
+        onCancel={handleCancel}
+        footer={null}
+      >
+        <Form onFinish={handleFormSubmit} form={form}>
+          <Form.Item
+            name="branchId"
+            label="BranchId"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the branch ID!",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="branchId" label="Branch ID" rules={[{ required: true, message: "Please enter the branch ID" }]}>
+          <Form.Item
+            name="branchName"
+            label="Branch Name"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the branch name!",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="branchLocation" label="Location" rules={[{ required: true, message: "Please enter the location" }]}>
+
+          <Form.Item
+            name="branchLocation"
+            label="Branch Location"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the branch location!",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="branchStaff" label="Branch Staff" rules={[{ required: true, message: "Please enter the branch staff" }]}>
-          <Input />
-          </Form.Item>
-          <Form.Item name="status" label="Status" rules={[{ required: true, message: "Please select the status" }]}>
-            <Select>
-              <Option value="active">Active</Option>
-              <Option value="passive">Passive</Option>
+
+          <Form.Item
+            name="branchStaff"
+            label="Branch Staff name"
+            rules={[
+              {
+                required: true,
+                message: "Please select the branch staff!",
+              },
+            ]}
+          >
+           <Select>
+          {branchStaffs.map((branch) => (
+             <Option key={branch._id} value={branch.firstName}>
+          {branch.branchStaff}
+           </Option>
+          ))}
             </Select>
           </Form.Item>
+
+
           <Form.Item>
-            <Button type="primary" htmlType="submit" className="mx-2">
+            <Button type="primary" htmlType="submit">
               Create
             </Button>
-            <Button type="primary" onClick={() => form.resetFields()}>
-              Cancel </Button>
           </Form.Item>
         </Form>
-      </Modal> 
-      {
-        isUpdateFormVisible && upDateIntialValueData && (
-            <Modal
-            title="UpdateInput"
-            visible={isUpdateFormVisible}
-            onCancel={() => setIsUpdateFormVisible(false)}
-            footer={null}
+      </Modal>
+
+      <Modal
+        title="Update Branch"
+        visible={isUpdateFormVisible}
+        onCancel={() => setIsUpdateFormVisible(false)}
+        footer={null}
+      >
+        <Form
+          onFinish={(values) =>
+            handleUpdateFormSubmit(updatePrevBranchData._id, values)
+          }
+          form={form}
+          initialValues={updatePrevBranchData}
+        >
+          <Form.Item
+            name="branchId"
+            label="BranchId"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the branch ID!",
+              },
+            ]}
           >
-              <Form
-              form={form}
-              initialValues={upDateIntialValueData}
-              onFinish={(values) => handleUpdateFormSubmit(updatePrevBranch.inputId, values)}
-              >
-         <Form.Item name="branchName" label="Branch Name" rules={[{ required: true, message: "Please enter the branch name" }]}>
             <Input />
           </Form.Item>
-          <Form.Item name="branchId" label="Branch ID" rules={[{ required: true, message: "Please enter the branch ID" }]}>
+          <Form.Item
+            name="branchName"
+            label="Branch Name"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the branch name!",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="branchLocation" label="Location" rules={[{ required: true, message: "Please enter the location" }]}>
+          <Form.Item
+            name="branchLocation"
+            label="Branch Location"
+            rules={[
+              {
+                required: true,
+                message: "Please enter the branch location!",
+              },
+            ]}
+          >
             <Input />
           </Form.Item>
-          <Form.Item name="branchstaff" label="Branch Staff" rules={[{ required: true, message: "Please enter the branch staff" }]}>
-            <Input />
-          </Form.Item>
-          <Form.Item name="status" label="Status" rules={[{ required: true, message: "Please select the status" }]}>
+          <Form.Item
+            name="branchStaff"
+            label="Branch Staff"
+            rules={[
+              {
+                required: true,
+                message: "Please select the branch staff!",
+              },
+            ]}
+          >
             <Select>
-              <Option value="active">Active</Option>
-              <Option value="passive">Passive</Option>
+          {branchStaffs.map((branch) => (
+             <Option key={branch._id} value={branch._id}>
+          {branch.branchStaff}
+           </Option>
+            ))}
             </Select>
+
           </Form.Item>
-            
-                <Form.Item>
-                      <Button type="primary" htmlType="submit" className='mx-2' >
-                          update  
-                      </Button>
-                      <Button type="primary" onClick={() => { form.resetFields();  }} >
+          <Form.Item>
+            <Button type="primary" htmlType="submit" mx-2>
+              Update
+            </Button>
+            <Button type="primary" onClick={() => { form.resetFields();  }} >
                       Cancel
                       </Button>
-                </Form.Item>
-              </Form>  
-          </Modal>
-        )
-      }
-      <div style={{ maxHeight: "400px", overflowY: "scroll" }}>
-        <Table columns={columns} dataSource={branches} />
-      </div>
+          </Form.Item>
+        </Form>
+      </Modal>
     </Layout>
   );
 };

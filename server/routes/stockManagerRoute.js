@@ -5,9 +5,9 @@ const order =require('../models/orderModel');
 const Category =require('../models/category');
 const authMiddleware =require("../middleware/authMiddleware");
 const {  ObjectId, Types } = require('mongoose');
+const nodemailer = require('nodemailer');
 
-
-                    // inputs
+  
 // add inputs 
 
 router.post('/createInput', async (req, res) => {
@@ -226,7 +226,48 @@ router.get('/check-expiration-date', async (req, res) => {
 });
 
 
+// Configure nodemailer to send email notifications
+const transporter = nodemailer.createTransport({
+  host: 'your_email_host',
+  port: 587,
+  secure: false,
+  auth: {
+    user: 'your_email_username',
+    pass: 'your_email_password',
+  },
+});
 
+// Function to fetch inputs with expiration dates close to or less than one month away
+async function getInputsExpiringSoon() {
+  const currentDate = new Date();
+  const oneMonthFromNow = new Date();
+  oneMonthFromNow.setMonth(oneMonthFromNow.getMonth() + 1);
+
+  const input = await inputs.find({
+    expirationDate: { $lte: oneMonthFromNow },
+  }).exec();
+
+  return input;
+}
+
+
+// Function to send email notification to the stock manager
+function sendStockManagerNotification(stockManagerEmail, subject, message) {
+  const mailOptions = {
+    from: 'your_email_address',
+    to: stockManagerEmail,
+    subject: subject,
+    text: message,
+  };
+
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      console.error('Error sending email:', error);
+    } else {
+      console.log('Email sent:', info.response);
+    }
+  });
+}
 
 
 
